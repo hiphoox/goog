@@ -3,13 +3,13 @@
     <tag>stdout</tag>
     <type>console</type>
     <!-- level is (:?FINEST|FINE|DEBUG|TRACE|INFO|WARNING|ERROR) -->
-    <level>INFO</level>
+    <level>DEBUG</level>
   </filter>
   <filter enabled="true">
     <tag>file</tag>
     <type>file</type>
     <level>FINEST</level>
-    <property name="filename">logs/mercurio.log</property>
+    <property name="filename">logs/goog.log</property>
     <!--
        %T - Time (15:04:05 MST)
        %t - Time (15:04)
