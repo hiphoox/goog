@@ -2,6 +2,7 @@ package goog
 
 import (
   "testing"
+  "fmt"
   l4g "code.google.com/p/log4go"
 )
 
@@ -21,8 +22,11 @@ const (
 )
 
 func TestConnect(t *testing.T) {
-    _, err := Connect(server, database_name, login, password)
+    client, err := Connect(server, database_name, login, password)
     if err != nil {
-      t.Fatal("Failed test: %s\n", err.Error())
+      t.Error("Failed test:", err.Error(), "type:", fmt.Sprintf("%T", err.Error()), "\n")
     }
+
+    token :=  client.GetToken()
+    l4g.Info(token)
 }

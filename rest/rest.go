@@ -107,6 +107,11 @@ func (self *Client) SetBasicAuth(username string, password string) {
   self.Header.Set("Authorization", "Basic "+basicAuth(username, password))
 }
 
+// Sets the request's basic authorization header to be used in all requests.
+func (client *Client) GetHeader(header_name string) string {
+  return client.Header.Get(header_name)
+}
+
 func (self *Client) newMultipartRequest(dst interface{}, method string, addr *url.URL, body *MultipartBody) error {
   var res *http.Response
   var req *http.Request
@@ -292,6 +297,17 @@ func (self *Client) Get(dst interface{}, path string, data url.Values) error {
   }
 
   return self.newRequest(dst, "GET", addr, nil)
+}
+
+// We don't need any GET vars
+// We also don't care about the response body
+func (client *Client) GetHeaders(path string) error {
+  // var buf []byte
+  err := client.Get(nil, path, nil)
+      if err.Error() == "EOF" {
+      err = nil
+    }
+  return err
 }
 
 // NewMultipartBody creates a *MultipartBody based on the given parameters.

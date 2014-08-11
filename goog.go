@@ -2,35 +2,43 @@ package goog
 
 import (
   "github.com/hiphoox/goog/rest"
-  "net/url"
   l4g "code.google.com/p/log4go"
 )
 
+const (
+  CONNECT_URL = "/connect/"
+  HTTP_PREFIX = "http://"
+)
+
 type DataBase struct {
-  url        string
   name       string
-  basicToken string
+  server      string
+  client     *rest.Client
 }
 
 func Connect(server, database_name, login, password string) (DataBase, error) {
-  l4g.Trace("Starting connection...")
+  l4g.Trace("Inside Connect")
   var db DataBase
 
-  // We don't need any GET vars.
-  requestVariables := url.Values{}
-
   // Create client
-  client, err := rest.New(server)
+  client, err := rest.New(HTTP_PREFIX + server)
 
-  if err != nil {
-    db = DataBase{}
+  if err == nil {
+    l4g.Trace("Getting token...")
     client.SetBasicAuth(login, password)
-    err = client.Get("", "/connect/" + database_name, requestVariables)
-    if err != nil {
-      l4g.Trace(err)
+    err = client.GetHeaders(CONNECT_URL + database_name)
+
+    if err == nil {
+     l4g.Trace("Creating database structure...")
+      db = DataBase{  name: database_name, 
+                    server: server,
+                    client: client}
     }
   }
 
   return db, err
 }
 
+func (db *DataBase) GetToken() string {
+    return db.client.GetHeader("Set-Cookie")
+}
